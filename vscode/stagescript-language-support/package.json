@@ -1,0 +1,35 @@
+{
+  "name": "stagescript-language-support",
+  "displayName": "Stagescript Language Support",
+  "description": "Syntax highlighting for stagescript markup language",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.87.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "stagescript",
+        "aliases": [
+          "Stagescript",
+          "stagescript"
+        ],
+        "extensions": [
+          ".play",
+          ".stagescript"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "stagescript",
+        "scopeName": "source.stagescript",
+        "path": "./syntaxes/stagescript.tmLanguage.json"
+      }
+    ]
+  }
+}

@@ -1,0 +1,3 @@
+% This should trigger a recursion error
+
+/include main.play

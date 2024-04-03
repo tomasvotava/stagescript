@@ -1,0 +1,38 @@
+author: William Shakespeare
+
+/introduce hamlet; Hamlet; Hamlet, prince of Denmark
+/introduce gertruda; Gertruda; Gertruda, his mother
+
+# Hamlet
+
+## Act first
+
+### Scene first
+
+% This part may be made up.
+
+> @hamlet walks in on @gertruda. She is currently knitting.
+
+@otello: {enters} Hey, what's up? {looks at @gertruda} I'm not supposed to be here. {leaves}
+
+> @hamlet does a backflip, snaps her neck and saves the day.
+
+@gertruda: I didn't expect thou to break my neck, my son.
+
+/include intermezzo.play
+
+@hamlet: Sorry mom, my bad.
+
+@gertruda: It doesn't matter {overlooks the audience, then looks back at @hamlet}, we all
+would have died anyway.
+
+@hamlet: Don't say this, mother. {looks at the audience
+with a sad face}
+
+> @gertruda dies
+
+@hamlet: That's better. {walks away} See you all in Hell. {dies}
+
+@gertruda, @hamlet: {both walk back in} That's it. Go home.
+
+> @gertruda and @hamlet leave the scene forever.

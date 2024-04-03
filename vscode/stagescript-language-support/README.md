@@ -1,6 +1,6 @@
-# screenplay-language-support README
+# stagescript-language-support README
 
-This is the README for your extension "screenplay-language-support". After writing up a brief description, we recommend including the following sections.
+This is the README for your extension "stagescript-language-support". After writing up a brief description, we recommend including the following sections.
 
 ## Features
 

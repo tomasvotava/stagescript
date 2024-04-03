@@ -1,0 +1,55 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: trailing-whitespace
+      - id: check-toml
+      - id: fix-byte-order-marker
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: mixed-line-ending
+      - id: check-executables-have-shebangs
+      - id: check-shebang-scripts-are-executable
+      - id: detect-private-key
+      - id: forbid-submodules
+  - hooks:
+      - id: commitizen
+      - id: commitizen-branch
+        stages:
+          - push
+    repo: https://github.com/commitizen-tools/commitizen
+    rev: v3.21.3
+  - repo: local
+    hooks:
+      - id: mypy-backend
+        name: mypy
+        entry: mypy stagescript
+        pass_filenames: false
+        language: system
+  - repo: https://github.com/psf/black
+    rev: "24.3.0"
+    hooks:
+      - id: black
+        args: [--line-length, "120"]
+  - repo: https://github.com/PyCQA/isort
+    rev: "5.12.0"
+    hooks:
+      - id: isort
+        args: [--profile, black]
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.4.0
+    hooks:
+      - id: detect-secrets
+  - repo: local
+    hooks:
+      - id: ruff
+        name: ruff stagescript
+        entry: ruff stagescript
+        pass_filenames: false
+        language: system
+  - repo: https://github.com/compilerla/conventional-pre-commit
+    rev: v3.0.0
+    hooks:
+      - id: conventional-pre-commit
+        stages: [commit-msg]
+        args: []

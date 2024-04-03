@@ -1,0 +1,114 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "Stagescript",
+	"patterns": [
+		{
+			"name": "entity.name.label.comment.stagescript",
+			"match": "^%(.*)$",
+			"captures": {
+				"0": {
+					"name": "emphasis.comment.stagescript"
+				},
+				"1": {
+					"name": "entity.name.label.stagescript"
+				}
+			}
+		},
+		{
+			"name": "meta.metadata.stagescript",
+			"match": "^([a-zA-Z0-9_\\-]+):\\s?(.*)$",
+			"captures": {
+				"1": {
+					"name": "keyword.metadata.key.stagescript"
+				},
+				"2": {
+					"name": "string.quoted.double.metadata.value.stagescript"
+				}
+			}
+		},
+		{
+			"name": "entity.name.stagescript",
+			"match": "^# (.+)$",
+			"captures": {
+				"1": {
+					"name": "variable.name.stagescript"
+				}
+			}
+		},
+		{
+			"name": "entity.act.stagescript",
+			"match": "^## (.+)$",
+			"captures": {
+				"1": {
+					"name": "variable.name.act.stagescript"
+				}
+			}
+		},
+		{
+			"name": "entity.scene.stagescript",
+			"match": "^### (.+)$",
+			"captures": {
+				"1": {
+					"name": "variable.name.scene.stagescript"
+				}
+			}
+		},
+		{
+			"name": "entity.name.function.stagescript",
+			"match": "^/(\\w+)(\\s.*)?$",
+			"captures": {
+				"2": {
+					"name": "constant.character.argument.function.stagescript"
+				}
+			}
+		},
+		{
+			"name": "constant.character.escape.stage.direction.stagescript",
+			"begin": "^> ",
+			"end": "(?=(^(@[a-zA-Z0-9]+(,\\s?@[a-zA-Z0-9]+)*):|^# |^## |^### |^/|^%))",
+			"patterns": [
+				{
+					"name": "variable.parameter.character.stagescript",
+					"match": "@[a-zA-Z0-9]+"
+				}
+			]
+		},
+		{
+			"name": "string.quoted.double.character.dialogue.stagescript",
+			"begin": "(@[a-zA-Z0-9]+(,\\s?@[a-zA-Z0-9]+)*):",
+			"end": "(?=(^(@[a-zA-Z0-9]+(,\\s?@[a-zA-Z0-9]+)*):|^# |^## |^### |^> |^/|^%))",
+			"beginCaptures": {
+				"0": {
+					"name": "variable.parameter.character.stagescript"
+				}
+			},
+			"patterns": [
+				{
+					"name": "constant.character.escape.stage.direction.inline.stagescript",
+					"begin": "\\{",
+					"end": "\\}",
+					"patterns": [
+						{
+							"name": "variable.parameter.character.stagescript",
+							"match": "@[a-zA-Z0-9]+"
+						}
+					]
+				},
+				{
+					"match": "[^{}]+",
+					"name": "string.quoted.double.character.dialogue.stagescript"
+				},
+				{
+					"match": "@[a-zA-Z0-9]+",
+					"name": "variable.parameter.character.stagescript"
+				}
+			]
+		},
+		{
+			"name": "variable.parameter.character.stagescript",
+			"match": "@[a-zA-Z0-9]+"
+		}
+	],
+	"repository": {},
+	"scopeName": "source.stagescript"
+}
