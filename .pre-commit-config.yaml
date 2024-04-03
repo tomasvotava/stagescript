@@ -14,9 +14,9 @@ repos:
       - id: forbid-submodules
   - hooks:
       - id: commitizen
-      - id: commitizen-branch
         stages:
-          - push
+          - commit-msg
+        args: [--allow-abort, --commit-msg-file]
     repo: https://github.com/commitizen-tools/commitizen
     rev: v3.21.3
   - repo: local
