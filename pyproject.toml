@@ -10,7 +10,7 @@ readme = "README.md"
 stagescript = "stagescript.__main__:cli"
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.10"
 colorlog = "^6.8.2"
 click = "^8.1.7"
 
