@@ -11,7 +11,8 @@ author: William Shakespeare
 
 % This part may be made up.
 
-> @hamlet walks in on @gertruda. She is currently knitting.
+> @hamlet walks in on @gertruda. She is currently knitting. @(Gertruda)gertruda
+knew she could use this notation for declension.
 
 @otello: {enters} Hey, what's up? {looks at @gertruda} I'm not supposed to be here. {leaves}
 
@@ -20,6 +21,8 @@ author: William Shakespeare
 @gertruda: I didn't expect thou to break my neck, my son.
 
 /include intermezzo.play
+
+### Second scene
 
 @hamlet: Sorry mom, my bad.
 
@@ -36,3 +39,13 @@ with a sad face}
 @gertruda, @hamlet: {both walk back in} That's it. Go home.
 
 > @gertruda and @hamlet leave the scene forever.
+
+## Second Act
+
+### Epilogue
+
+> Nobody does anything.
+
+@hamlet: {enters} I'm back.
+
+> @hamlet leaves the scene.

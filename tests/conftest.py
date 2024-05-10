@@ -3,7 +3,7 @@ from typing import Generator
 
 import pytest
 
-from stagescript.parser import StagescriptParser
+from stagescript import StageScript, Tokenizer
 
 _script_basic_content = {
     "test.play": """# test play\n/introduce foo; Foo; Foo, the Fooer\n/introduce bar; Bar; Bar, the Barer\n\n> @foo enters\n@foo: Hi Bar\n"""
@@ -17,6 +17,8 @@ _script_include_content = {
 _script_compact_content = {
     "test.play": """# test play\n> I am doing something\nand I still am\n@tom: I am speaking.\n\nThis needs to be another line"""
 }
+
+_script_declension_content = {"test.play": """> Dívá se na @(Gertrudu)gertrude naštvaně\n"""}
 
 _script_unknown_function = {"test.play": "# test play\n/nonexistent funuction"}
 
@@ -52,6 +54,12 @@ def script_compact(tmp_path: Path) -> Generator[Path, None, None]:
 
 
 @pytest.fixture()
+def script_declension(tmp_path: Path) -> Generator[Path, None, None]:
+    _create_path_structure(tmp_path, _script_declension_content)
+    yield tmp_path / "test.play"
+
+
+@pytest.fixture()
 def script_unknown_function(tmp_path: Path) -> Generator[Path, None, None]:
     _create_path_structure(tmp_path, _script_unknown_function)
     yield tmp_path / "test.play"
@@ -64,21 +72,20 @@ def script_circular_include(tmp_path: Path) -> Generator[Path, None, None]:
 
 
 @pytest.fixture()
-def parsed_basic(script_basic: Path) -> StagescriptParser:
-    parser = StagescriptParser()
-    parser.parse(script_basic)
-    return parser
+def parsed_basic(script_basic: Path) -> StageScript:
+    return Tokenizer.parse(script_basic)
 
 
 @pytest.fixture()
-def parsed_include(script_include: Path) -> StagescriptParser:
-    parser = StagescriptParser()
-    parser.parse(script_include)
-    return parser
+def parsed_include(script_include: Path) -> StageScript:
+    return Tokenizer.parse(script_include)
 
 
 @pytest.fixture()
-def parsed_compact(script_compact: Path) -> StagescriptParser:
-    parser = StagescriptParser()
-    parser.parse(script_compact)
-    return parser
+def parsed_compact(script_compact: Path) -> StageScript:
+    return Tokenizer.parse(script_compact)
+
+
+@pytest.fixture()
+def parsed_declension(script_declension: Path) -> StageScript:
+    return Tokenizer.parse(script_declension)
