@@ -23,7 +23,7 @@ repos:
     hooks:
       - id: mypy-backend
         name: mypy
-        entry: mypy stagescript
+        entry: mypy stagescript tests
         pass_filenames: false
         language: system
   - repo: https://github.com/psf/black
@@ -44,7 +44,7 @@ repos:
     hooks:
       - id: ruff
         name: ruff stagescript
-        entry: ruff stagescript
+        entry: ruff stagescript tests
         pass_filenames: false
         language: system
   - repo: https://github.com/compilerla/conventional-pre-commit
