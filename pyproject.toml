@@ -24,6 +24,9 @@ addopts = [
     "--cov-report=lcov",
 ]
 
+[tool.coverage.run]
+omit = ["stagescript/__main__.py"]
+
 [tool.poetry.group.dev.dependencies]
 black = "^24.3.0"
 mypy = "^1.9.0"
@@ -63,6 +66,12 @@ convention = "google"
 
 [tool.ruff.lint.isort]
 known-first-party = ["stagescript"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = [
+    "S101",   # allow asserts in tests
+    "RUF018", # allow asserts with walrus in tests
+]
 
 [tool.black]
 line-length = 120

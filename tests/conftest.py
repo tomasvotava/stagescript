@@ -1,12 +1,12 @@
 from pathlib import Path
-from typing import Generator
 
 import pytest
 
 from stagescript import StageScript, Tokenizer
 
 _script_basic_content = {
-    "test.play": """# test play\n/introduce foo; Foo; Foo, the Fooer\n/introduce bar; Bar; Bar, the Barer\n\n> @foo enters\n@foo: Hi Bar\n"""
+    "test.play": "# test play\n/introduce foo; Foo; Foo, the Fooer\n/introduce bar; Bar; Bar, the Barer\n\n"
+    "> @foo enters\n@foo: Hi Bar\n"
 }
 
 _script_include_content = {
@@ -15,12 +15,43 @@ _script_include_content = {
 }
 
 _script_compact_content = {
-    "test.play": """# test play\n> I am doing something\nand I still am\n@tom: I am speaking.\n\nThis needs to be another line"""
+    "test.play": "# test play\n> I am doing something\nand I still am\n"
+    "@tom: I am speaking.\n\nThis needs to be another line"
+}
+
+_script_all_features = {
+    "test.play": """% This is the most awesome play in the world
+# Test all features
+
+/introduce tom; Tom; Tom is awesome
+/introduce carl; Carl; Carl is just Carl
+
+## Act One
+
+### Scene one
+
+> Both are sitting at the table. @carl stands up after a while.
+
+@carl: I would like to know something.
+
+@tom: {smiles} I know.
+
+@carl: Well, at least you know.
+
+@tom, @carl: {laugh} Hahaha.
+
+/include included.play
+
+@tom: This is the end
+""",
+    "included.play": "## Another act\n\n### Another scene\n",
 }
 
 _script_declension_content = {"test.play": """> Dívá se na @(Gertrudu)gertrude naštvaně\n"""}
 
 _script_unknown_function = {"test.play": "# test play\n/nonexistent funuction"}
+
+_script_unnamed_content = {"test.play": "/introduce foo; Mark; Mark is not a foo\n\n ## Act one"}
 
 _script_circular_include_content = {
     "test.play": "/include metadata.play",
@@ -36,39 +67,51 @@ def _create_path_structure(path: Path, content: dict[str, str]) -> None:
 
 
 @pytest.fixture()
-def script_basic(tmp_path: Path) -> Generator[Path, None, None]:
+def script_basic(tmp_path: Path) -> Path:
     _create_path_structure(tmp_path, _script_basic_content)
-    yield tmp_path / "test.play"
+    return tmp_path / "test.play"
 
 
 @pytest.fixture()
-def script_include(tmp_path: Path) -> Generator[Path, None, None]:
+def script_include(tmp_path: Path) -> Path:
     _create_path_structure(tmp_path, _script_include_content)
-    yield tmp_path / "test.play"
+    return tmp_path / "test.play"
 
 
 @pytest.fixture()
-def script_compact(tmp_path: Path) -> Generator[Path, None, None]:
+def script_compact(tmp_path: Path) -> Path:
     _create_path_structure(tmp_path, _script_compact_content)
-    yield tmp_path / "test.play"
+    return tmp_path / "test.play"
 
 
 @pytest.fixture()
-def script_declension(tmp_path: Path) -> Generator[Path, None, None]:
+def script_declension(tmp_path: Path) -> Path:
     _create_path_structure(tmp_path, _script_declension_content)
-    yield tmp_path / "test.play"
+    return tmp_path / "test.play"
 
 
 @pytest.fixture()
-def script_unknown_function(tmp_path: Path) -> Generator[Path, None, None]:
+def script_unknown_function(tmp_path: Path) -> Path:
     _create_path_structure(tmp_path, _script_unknown_function)
-    yield tmp_path / "test.play"
+    return tmp_path / "test.play"
 
 
 @pytest.fixture()
-def script_circular_include(tmp_path: Path) -> Generator[Path, None, None]:
+def script_circular_include(tmp_path: Path) -> Path:
     _create_path_structure(tmp_path, _script_circular_include_content)
-    yield tmp_path / "test.play"
+    return tmp_path / "test.play"
+
+
+@pytest.fixture()
+def script_unnamed(tmp_path: Path) -> Path:
+    _create_path_structure(tmp_path, _script_unnamed_content)
+    return tmp_path / "test.play"
+
+
+@pytest.fixture()
+def script_all_features(tmp_path: Path) -> Path:
+    _create_path_structure(tmp_path, _script_all_features)
+    return tmp_path / "test.play"
 
 
 @pytest.fixture()
@@ -89,3 +132,13 @@ def parsed_compact(script_compact: Path) -> StageScript:
 @pytest.fixture()
 def parsed_declension(script_declension: Path) -> StageScript:
     return Tokenizer.parse(script_declension)
+
+
+@pytest.fixture()
+def parsed_unnamed(script_unnamed: Path) -> StageScript:
+    return Tokenizer.parse(script_unnamed)
+
+
+@pytest.fixture()
+def parsed_all_features(script_all_features: Path) -> StageScript:
+    return Tokenizer.parse(script_all_features)

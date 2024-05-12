@@ -41,9 +41,6 @@ def test_basic_flow(parsed_basic: StageScript) -> None:
 
 def test_included_data(parsed_include: StageScript) -> None:
     assert parsed_include.name == "test play"
-    from stagescript.export.json import JSONExporter
-
-    JSONExporter(parsed_include).export("./output")
     acts = list(filter(lambda node: node.kind == NodeKind.ACT, parsed_include.nodes))
     scenes = list(filter(lambda node: node.kind == NodeKind.SCENE, parsed_include.flatten()))
     assert len(acts) == 2

@@ -47,7 +47,7 @@ class MarkdownExporter(Exporter):
                             "SPEAKER node is neither parent nor a child."
                         )
                     speaker = self.get_character_name(node.text)
-                file.write(f"\n\n**{speaker}**:")
+                file.write(f"\n\n**{speaker}**: ")
             case NodeKind.DIALOGUE:
                 for child_node in node.children:
                     self._process_node(file, child_node)

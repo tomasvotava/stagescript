@@ -27,4 +27,4 @@ class Exporter(ABC):
 
     @abstractmethod
     def export(self, path: Path | str) -> None:
-        pass
+        pass  # pragma: no cover
