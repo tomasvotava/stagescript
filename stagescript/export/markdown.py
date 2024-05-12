@@ -20,8 +20,7 @@ class MarkdownExporter(Exporter):
     def _process_node(self, file: TextIO, node: Node) -> None:
         match node.kind:
             case NodeKind.TEXT:
-                assert node.text is not None
-                file.write(node.text)
+                file.write(guard(node.text, str))
             case NodeKind.ACT:
                 file.write(f"\n## {node.children[0].text}\n")
                 for child_node in node.children[1:]:
@@ -60,8 +59,7 @@ class MarkdownExporter(Exporter):
                     self._process_node(file, child_node)
                 file.write("*)")
             case NodeKind.MENTION:
-                assert node.text is not None
-                name = self.get_character_name(node.text)
+                name = self.get_character_name(guard(node.text, str))
                 file.write(f"**{name}**")
             case NodeKind.STAGE_DIRECTION:
                 file.write("> ")

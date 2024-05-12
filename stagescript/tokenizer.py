@@ -1,9 +1,9 @@
 import inspect
 import logging
 import re
+from collections.abc import Callable, Iterable, Iterator
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Callable, Iterable, Iterator
 
 from stagescript.entities import (
     Character,
@@ -304,10 +304,8 @@ class Tokenizer:
                     continue
 
                 if self._current_scene is not None:
-                    print(f"Adding {processed_nodes[0].kind} to current scene {self._current_scene.children[0].text}")
                     self._current_scene.children.extend(processed_nodes)
                 elif self._current_act is not None:
-                    print(f"Adding {processed_nodes[0].kind} to current act {self._current_act.children[0].text}")
                     self._current_act.children.extend(processed_nodes)
                 else:
                     yield from processed_nodes

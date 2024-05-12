@@ -6303,7 +6303,7 @@ names = [
 
 
 def get_random_name() -> str:
-    return random.choice(adjectives) + " " + random.choice(names)
+    return random.choice(adjectives) + " " + random.choice(names)  # noqa: S311
 
 
 def get_random_slug() -> str:

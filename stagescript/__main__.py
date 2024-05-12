@@ -50,11 +50,11 @@ exporter_classes: dict[str, type[Exporter]] = {"markdown": MarkdownExporter, "js
 @click.argument("file", type=click.Path(exists=True, file_okay=True, dir_okay=False, resolve_path=True))
 @click.option("--output", "-o", type=click.Path(file_okay=False, dir_okay=True, writable=True), default="./output")
 @click.option("--type", "-t", type=click.Choice(list(exporter_classes.keys())), default="markdown")
-def convert(file: str, output: str, type: str) -> None:
+def convert(file: str, output: str, type_: str) -> None:
     script = Tokenizer.parse(file)
-    if type not in exporter_classes:
-        raise ValueError(f"{type!r} is an unknown output type")
-    ExporterClass = exporter_classes[type]
+    if type_ not in exporter_classes:
+        raise ValueError(f"{type_!r} is an unknown output type")
+    ExporterClass = exporter_classes[type_]  # noqa: N806
     exporter = ExporterClass(script)
     exporter.export(Path(output))
 
