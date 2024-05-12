@@ -49,7 +49,7 @@ exporter_classes: dict[str, type[Exporter]] = {"markdown": MarkdownExporter, "js
 @cli.command("convert", cls=CatchAllCommand)
 @click.argument("file", type=click.Path(exists=True, file_okay=True, dir_okay=False, resolve_path=True))
 @click.option("--output", "-o", type=click.Path(file_okay=False, dir_okay=True, writable=True), default="./output")
-@click.option("--type", "-t", type=click.Choice(list(exporter_classes.keys())), default="markdown")
+@click.option("--type", "-t", "type_", type=click.Choice(list(exporter_classes.keys())), default="markdown")
 def convert(file: str, output: str, type_: str) -> None:
     script = Tokenizer.parse(file)
     if type_ not in exporter_classes:
