@@ -1,4 +1,13 @@
 author: William Shakespeare
+year: 1603
+language: cz
+
+font-family: EB Garamond
+
+template-characters-sorted: true
+template-direction-open: (
+template-direction-close: )
+template-font-size: 14pt
 
 /introduce hamlet; Hamlet; Hamlet, prince of Denmark
 /introduce gertruda; Gertruda; Gertruda, his mother
@@ -11,8 +20,10 @@ author: William Shakespeare
 
 % This part may be made up.
 
-> @hamlet walks in on @gertruda. She is currently knitting. @(Gertruda)gertruda
-knew she could use this notation for declension.
+> @hamlet walks in on @gertruda. She is currently knitting. @(Gertrudita)gertruda
+> knew she could use this notation for declension.
+
+> This is a different stage direction.
 
 @otello: {enters} Hey, what's up? {looks at @gertruda} I'm not supposed to be here. {leaves}
 

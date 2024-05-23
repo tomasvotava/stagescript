@@ -4,14 +4,19 @@ from typing import Any
 
 import click
 
+from stagescript import JSONExporter, MarkdownExporter, ODFTextExporter
 from stagescript.export.base import Exporter
-from stagescript.export.json import JSONExporter
-from stagescript.export.markdown import MarkdownExporter
 from stagescript.log import get_logger
 
 from . import Tokenizer
 
 logger = get_logger(__name__)
+
+exporter_classes: dict[str, type[Exporter]] = {
+    "markdown": MarkdownExporter,
+    "json": JSONExporter,
+    "odftext": ODFTextExporter,
+}
 
 
 class CatchAllCommand(click.Command):
@@ -19,6 +24,8 @@ class CatchAllCommand(click.Command):
         try:
             return super().invoke(ctx)
         except Exception as error:
+            if ctx.obj and ctx.obj.get("loglevel") == "DEBUG":
+                raise
             logger.error(str(error))
             ctx.exit(1)
 
@@ -30,7 +37,9 @@ class CatchAllCommand(click.Command):
     default="INFO",
     help="Set loglevel for parsing and linting output",
 )
-def cli(level: str) -> None:
+@click.pass_context
+def cli(ctx: click.Context, level: str) -> None:
+    ctx.obj = {"loglevel": level}
     logging.getLogger().setLevel(level)
 
 
@@ -41,9 +50,6 @@ def lint(files: tuple[str]) -> None:
         raise ValueError("No files were passed")
     for file in files:
         Tokenizer.parse(file, dry_run=True)
-
-
-exporter_classes: dict[str, type[Exporter]] = {"markdown": MarkdownExporter, "json": JSONExporter}
 
 
 @cli.command("convert", cls=CatchAllCommand)

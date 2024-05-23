@@ -36,7 +36,7 @@ def test_basic_flow(parsed_basic: StageScript) -> None:
     assert node_speaker.text is None
     assert node_speaker.children[0].text == "foo"
     assert node_dialogue.kind == NodeKind.DIALOGUE
-    assert node_dialogue.children[0].text == "Hi Bar\n"
+    assert node_dialogue.children[0].text == "Hi Bar"
 
 
 def test_included_data(parsed_include: StageScript) -> None:

@@ -2,7 +2,7 @@ import re
 
 import pytest
 
-from stagescript.tokenizer import stop_pattern, toplevel_patterns
+from stagescript.tokenizer import dialogue_stop_pattern, toplevel_patterns
 
 
 @pytest.mark.parametrize(
@@ -72,7 +72,7 @@ def test_pattern_dialogue_extract_characters(string: str, characters: str) -> No
     ],
 )
 def test_pattern_find_dialogue_end(string: str, ends: bool) -> None:
-    assert bool(re.match(stop_pattern, string)) == ends
+    assert bool(re.match(dialogue_stop_pattern, string)) == ends
 
 
 @pytest.mark.parametrize(

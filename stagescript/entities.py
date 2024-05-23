@@ -4,6 +4,10 @@ from enum import Enum
 from pathlib import Path
 from typing import Any
 
+from stagescript.log import get_logger
+
+logger = get_logger(__name__)
+
 __all__ = [
     "Metadata",
     "Character",
@@ -100,8 +104,46 @@ def _iter_children(node: Node) -> Iterable[Node]:
             yield from _iter_children(child_node)
         else:
             yield child_node
-    else:
-        yield node
+    yield node
+
+
+def _from_booly(value: str) -> bool:
+    match value.lower().strip():
+        case "true" | "yes" | "on":
+            return True
+        case "false" | "no" | "off":
+            return False
+        case "":
+            return False
+        case "1":
+            return True
+        case _:
+            return False
+
+
+@dataclass(frozen=True, eq=True)
+class TemplateConfig:
+    characters_sorted: bool = False
+    break_after_act: bool = False
+    direction_open: str = "("
+    direction_close: str = ")"
+    font_size: str = "12pt"
+
+    @staticmethod
+    def from_meta(meta: dict[str, Metadata]) -> "TemplateConfig":
+        init_kwargs: dict[str, Any] = {}
+        if "template-characters-sorted" in meta:
+            init_kwargs["characters_sorted"] = _from_booly(meta["template-characters-sorted"].value)
+        if "template-break-after-act" in meta:
+            init_kwargs["break_after_act"] = _from_booly(meta["template-break-after-act"].value)
+        if "template-direction-open" in meta:
+            init_kwargs["direction_open"] = meta["template-direction-open"].value
+        if "template-direction-close" in meta:
+            init_kwargs["direction_close"] = meta["template-direction-close"].value
+        if "template-font-size" in meta:
+            init_kwargs["font_size"] = meta["template-font-size"].value
+        logger.debug(init_kwargs)
+        return TemplateConfig(**init_kwargs)
 
 
 @dataclass(frozen=True, eq=True)
@@ -111,6 +153,12 @@ class StageScript:
     characters: dict[str, Character] = field(default_factory=dict)
     nodes: list[Node] = field(default_factory=list)
     violations: list[LintingViolation] = field(default_factory=list)
+    template: TemplateConfig = field(default_factory=TemplateConfig)
+
+    def __post_init__(self) -> None:
+        # hehe
+        if self.template == TemplateConfig():
+            object.__setattr__(self, "template", TemplateConfig.from_meta(self.metadata))
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -119,3 +167,21 @@ class StageScript:
         """Iterates through nodes and their children"""
         for node in self.nodes:
             yield from _iter_children(node)
+
+    @property
+    def author(self) -> str | None:
+        if "author" not in self.metadata:
+            return None
+        return self.metadata["author"].value
+
+    @property
+    def year(self) -> str | None:
+        if "year" not in self.metadata:
+            return None
+        return self.metadata["year"].value
+
+    @property
+    def language(self) -> str:
+        if "language" not in self.metadata:
+            return "en"
+        return self.metadata["language"].value

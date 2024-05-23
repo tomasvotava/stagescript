@@ -45,6 +45,7 @@ def test_json_exporter(parsed_include: StageScript, tmp_path: Path) -> None:
         output = json.load(file)
     # remove "contexts", they contain absolute paths and would differ
     _remove_key_recursive("context", output)
+    _remove_key_recursive("template", output)
     assert output == included_content_json
 
 
