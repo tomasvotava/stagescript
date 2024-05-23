@@ -3,13 +3,23 @@ from typing import TextIO
 
 from stagescript.entities import Node, NodeKind
 from stagescript.export.base import Exporter
+from stagescript.i18n import get_translation
 from stagescript.types import guard
+
+_ = get_translation()
 
 
 class MarkdownExporter(Exporter):
     def _write_characters(self, file: TextIO) -> None:
-        file.write(f"# {self.script.name or 'Unnamed stageplay'}\n\n")
-        file.write("## Characters\n\n")
+        file.write("# ")
+        file.write(self.script.name or _("Unnamed stageplay"))
+        file.write("\n\n")
+        if self.script.author is not None:
+            file.write(_("by"))
+            file.write(f" {self.script.author}\n\n")
+        file.write("## ")
+        file.write(_("Characters"))
+        file.write("\n\n")
         for character in sorted(self.script.characters.values(), key=lambda character: character.name):
             file.write(f"- {character.name}")
             if character.introduce:
@@ -49,10 +59,10 @@ class MarkdownExporter(Exporter):
                     speaker = self.get_character_name(node.text)
                 file.write(f"\n\n**{speaker}**: ")
             case NodeKind.DIALOGUE:
+                if not node.children:
+                    file.write(node.text or "")
                 for child_node in node.children:
                     self._process_node(file, child_node)
-                else:
-                    file.write(node.text or "")
             case NodeKind.INLINE_STAGE_DIRECTION:
                 file.write("(*")
                 for child_node in node.children:
@@ -65,13 +75,12 @@ class MarkdownExporter(Exporter):
                 file.write("> ")
                 for child_node in node.children:
                     self._process_node(file, child_node)
-                else:
-                    if node.text is not None:
-                        file.write(node.text)
+                if node.text is not None:
+                    file.write(node.text)
 
-    def export(self, path: Path | str) -> None:
-        path = Path(path)
-        path.mkdir(parents=True, exist_ok=True)
+    def _export(self, path: Path) -> None:
+        global _
+        _ = get_translation(self.script.language)
         output = path / f"{self.file_basename}.md"
         with output.open(mode="w", encoding="utf-8") as file:
             self._write_characters(file)

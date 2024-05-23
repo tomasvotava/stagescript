@@ -5,6 +5,9 @@ description = ""
 authors = ["Tomas Votava <info@tomasvotava.eu>"]
 license = "MIT"
 readme = "README.md"
+homepage = "https://github.com/tomasvotava/stagescript"
+repository = "https://github.com/tomasvotava/stagescript"
+include = ["i18n", "LICENSE.md"]
 
 [tool.poetry.scripts]
 stagescript = "stagescript.__main__:cli"
@@ -14,6 +17,7 @@ python = "^3.10"
 colorlog = "^6.8.2"
 click = "^8.1.7"
 python-slugify = "^8.0.4"
+odfpy = "^1.4.1"
 
 [tool.pytest.ini_options]
 addopts = [
@@ -89,6 +93,6 @@ build-backend = "poetry.core.masonry.api"
 [tool.mypy]
 strict = true
 
-#[[tool.mypy.overrides]]
-#module = ["pytest.*"]
-#ignore_missing_imports = true
+[[tool.mypy.overrides]]
+module = ["odf.*"]
+ignore_missing_imports = true

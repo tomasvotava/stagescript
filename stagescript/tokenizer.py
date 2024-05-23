@@ -19,7 +19,12 @@ from stagescript.log import get_logger
 
 logger = get_logger(__name__)
 
-stop_pattern = r"(?=(?:^@[a-zA-Z0-9]+(?:,\s?@[a-zA-Z0-9]+)*:)|(?:^#)|(?:^\/)|(?:^%)|(?:\Z)|(?:^>\s))"
+# Two and more consecutive newlines are considered a single newline,
+# while a single newline is considered to be formatting.
+forced_newline = re.compile(r"\n\s*\n+")
+single_newline = re.compile(r"(?<!\n)\n(?!\n)")
+
+dialogue_stop_pattern = r"(?=(?:^@[a-zA-Z0-9]+(?:,\s?@[a-zA-Z0-9]+)*:)|(?:^#)|(?:^\/)|(?:^%)|(?:\Z)|(?:^>\s))"
 
 toplevel_patterns: dict[str, str] = {
     "function": r"^/(?P<function>\w+)(?:\s(?P<function_arguments>.*))?$",
@@ -27,8 +32,12 @@ toplevel_patterns: dict[str, str] = {
     "act_name": r"^##\s?(?P<act_name>[^#]*?)$",
     "scene_name": r"^###\s?(?P<scene_name>[^#]*?)$",
     "metadata": r"^(?P<key>[a-zA-Z0-9_\-]+):\s?(?P<value>.*)$",
-    "stage_direction": r"^>\s(?P<stage_direction>.*)$",
-    "dialogue": rf"^(?P<speaker>@[a-zA-Z0-9]+(?:,\s?@[a-zA-Z0-9]+)*):\s?(?P<dialogue>(?:.|\s)+?){stop_pattern}",
+    "stage_direction": r"^>\s(?P<stage_direction>.+((?:\n>\s.+)*))",
+    "dialogue": (
+        rf"^(?P<speaker>@[a-zA-Z0-9]+(?:,\s?@[a-zA-Z0-9]+)*):\s?(?P<dialogue>(?:.|\s)+?){dialogue_stop_pattern}"
+    ),
+    "comment": r"^%(?P<comment>.*?)$",
+    "unrecognized": r"^(?!\/|@|#|##|###|>|%)(?P<unrecognized>.+)$",
 }
 
 
@@ -40,6 +49,10 @@ declension_sub_pattern = re.compile(r"\((?P<declension>[^\)]+)\)(?P<character>[a
 
 
 class ParsingError(ValueError): ...
+
+
+def clean_newlines(text: str) -> str:
+    return forced_newline.sub("\n", single_newline.sub(" ", text)).strip()
 
 
 class Tokenizer:
@@ -93,10 +106,10 @@ class Tokenizer:
         self._functions["include"] = self._handle_include
 
     def _handle_introduce(self, handle: str, name: str, introduce: str | None = None, *, context: Context) -> None:
-        logger.info("%s - Introducing %s (%s) as %s", context.link, name, handle, introduce)
+        logger.info("%s - Introducing %s (%s) as %s.", context.link, name, handle, introduce)
         if handle in self.characters:
             self.track_violation(
-                f"Character handle {handle} was previously introduced in {self.characters[handle].context.link}",
+                f"Character handle {handle} was previously introduced in {self.characters[handle].context.link}.",
                 context,
             )
         self.characters[handle] = Character(handle=handle, name=name, context=context, introduce=introduce)
@@ -137,7 +150,8 @@ class Tokenizer:
 
     def _process_stage_direction(self, string: str, kind: NodeKind, context: Context) -> Iterable[Node]:
         """Process inline/block stage direction and iterate nested nodes."""
-        for mo in stage_direction_sub_patterns.finditer(string):
+        string_cleaned = clean_newlines("\n".join(string.split("\n> ")))
+        for mo in stage_direction_sub_patterns.finditer(string_cleaned):
             for group, value in mo.groupdict().items():
                 if value is None:
                     continue
@@ -171,7 +185,7 @@ class Tokenizer:
 
     def _process_dialogue(self, dialogue: str, context: Context) -> Iterable[Node]:
         """Process a dialogue article and iterate nested nodes"""
-        for mo in dialogue_sub_patterns.finditer(dialogue):
+        for mo in dialogue_sub_patterns.finditer(clean_newlines(dialogue)):
             for group, value in mo.groupdict().items():
                 if value is None:
                     continue
@@ -259,6 +273,10 @@ class Tokenizer:
                     kind=NodeKind.SPEAKER,
                     children=list(self._process_speakers(value.strip(), context=context)),
                 )
+            case "comment":
+                logger.debug(f"{context.link} - % {value}")
+            case "unrecognized":
+                self.track_violation(f"Unrecognized or misplaced line: {value}", context)
             case default:  # pragma: no cover
                 self.track_violation(
                     f"Unexpected token type '{default}' - this is probably an error in the parser itself",

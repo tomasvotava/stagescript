@@ -15,16 +15,22 @@ class Exporter(ABC):
         self.script = script
         if script.name is None:
             self.file_basename = get_random_slug()
-            logger.warning("The play being exported has no name, using generated name: %s", self.file_basename)
+            logger.warning("The play being exported has no name, using generated name: %s.", self.file_basename)
         else:
             self.file_basename = slugify(script.name)
 
-    def get_character_name(self, handle: str) -> str:
+    def get_character_name(self, handle: str | None) -> str:
         """Returns either the character's name or the handle if the character was not introduced"""
+        handle = handle or ""
         if handle not in self.script.characters:
             return handle
         return self.script.characters[handle].name
 
     @abstractmethod
-    def export(self, path: Path | str) -> None:
+    def _export(self, path: Path) -> None:
         pass  # pragma: no cover
+
+    def export(self, path: Path | str) -> None:
+        path = Path(path)
+        path.mkdir(parents=True, exist_ok=True)
+        self._export(path)

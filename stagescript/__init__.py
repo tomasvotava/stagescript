@@ -8,7 +8,7 @@ from .entities import (
     NodeKind,
     StageScript,
 )
-from .export import JSONExporter, MarkdownExporter
+from .export import JSONExporter, MarkdownExporter, ODFTextExporter
 from .tokenizer import ParsingError, Tokenizer
 
 __all__ = [
@@ -24,4 +24,5 @@ __all__ = [
     "ParsingError",
     "JSONExporter",
     "MarkdownExporter",
+    "ODFTextExporter",
 ]
